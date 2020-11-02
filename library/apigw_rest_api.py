@@ -154,7 +154,8 @@ class ApiGwRestApi:
     """
     return dict( name=dict(required=True),
                  description=dict(required=False),
-                 state=dict(default='present', choices=['present', 'absent'])
+                 state=dict(default='present', choices=['present', 'absent']),
+                 endpoint_type=dict(type='str', default='EDGE', choices=['EDGE', 'REGIONAL', 'PRIVATE']),
     )
 
   def _retrieve_rest_api(self):
@@ -249,6 +250,8 @@ class ApiGwRestApi:
     """
     api = None
     kwargs = dict(name=self.module.params.get('name'))
+    endpoint_type = self.module.params.get('endpoint_type')
+    kwargs['endpointConfiguration'] = {'types': [endpoint_type]}
     if self.module.params.get('description'):
       kwargs['description'] = self.module.params.get('description')
     try:
