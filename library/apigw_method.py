@@ -138,7 +138,7 @@ options:
         - Method used by the integration.  This is required when C(integration_type) is 'HTTP', 'AWS_PROXY', or 'AWS'.
         type: 'string'
         default: 'POST'
-        choices: ['POST', 'GET', 'PUT']
+        choices: ['POST', 'GET', 'PUT', 'ANY']
         required: False
       uri:
         description:
@@ -1031,7 +1031,7 @@ class ApiGwMethod:
             default='AWS',
             choices=['AWS', 'MOCK', 'HTTP', 'HTTP_PROXY', 'AWS_PROXY']
           ),
-          http_method=dict(required=False, default='POST', choices=['POST', 'GET', 'PUT']),
+          http_method=dict(required=False, default='POST', choices=['POST', 'GET', 'PUT', 'ANY']),
           uri=dict(required=False),
           credentials=dict(required=False),
           passthrough_behavior=dict(
