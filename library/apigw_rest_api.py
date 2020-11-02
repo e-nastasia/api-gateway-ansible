@@ -167,7 +167,7 @@ class ApiGwRestApi:
       results = self.client.get_rest_apis()
       id = self.module.params.get('name')
 
-      api = filter(lambda result: result['name'] == id, results['items'])
+      api = list(filter(lambda result: result['name'] == id, results['items']))
 
       if len(api):
         response = api[0]
