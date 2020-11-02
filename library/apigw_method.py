@@ -689,7 +689,7 @@ def put_integration(params):
   if params.get('method_integration', {}).get('credentials', '') != '':
     optional_map['credentials'] = 'credentials'
 
-  if params['method_integration'].get('integration_type', 'AWS') in ['AWS', 'HTTP', 'AWS_PROXY']:
+  if params['method_integration'].get('integration_type', 'AWS') in ['AWS', 'HTTP', 'AWS_PROXY', 'HTTP_PROXY']:
     optional_map['uri'] = 'uri'
     optional_map['http_method'] = 'integrationHttpMethod'
 
@@ -718,7 +718,7 @@ def update_integration(method, params):
     param_map.pop('content_handling', None)
 
   ops = []
-  if mi_params.get('integration_type', 'AWS').upper() in ['AWS', 'HTTP', 'AWS_PROXY']:
+  if mi_params.get('integration_type', 'AWS').upper() in ['AWS', 'HTTP', 'AWS_PROXY', 'HTTP_PROXY']:
     param_map['uri'] = 'uri'
     param_map['http_method'] = 'httpMethod'
 
@@ -1138,7 +1138,7 @@ class ApiGwMethod:
     if p['authorization_type'] == 'CUSTOM' and 'authorizer_id' not in p:
       raise InvalidInputError('authorizer_id', "authorizer_id must be provided when authorization_type is 'CUSTOM'")
 
-    if p['method_integration']['integration_type'] in ['AWS', 'HTTP', 'AWS_PROXY']:
+    if p['method_integration']['integration_type'] in ['AWS', 'HTTP', 'AWS_PROXY', 'HTTP_PROXY']:
       if 'http_method' not in p['method_integration']:
         raise InvalidInputError('method_integration', "http_method must be provided when integration_type is 'AWS', 'AWS_PROXY', or 'HTTP'")
       elif 'uri' not in p['method_integration']:
