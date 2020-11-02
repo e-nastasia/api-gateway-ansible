@@ -201,6 +201,19 @@ options:
         default: ''
         required: False
         choices: ['', 'convert_to_binary', 'convert_to_text']
+      connection_id:
+        description:
+        - The id of the VpcLink used for the integration when connectionType=VPC_LINK and undefined, otherwise.
+        type: 'string'
+        default: ''
+        required: False
+      connection_type:
+        description:
+        - The type of the network connection to the integration endpoint. The valid value is INTERNET for connections through the public routable internet or VPC_LINK for private connections between API Gateway and a network load balancer in a VPC. The default value is INTERNET.
+        type: 'string'
+        default: 'INTERNET'
+        required: False
+        choices: ['INTERNET', 'VPC_LINK']
       integration_params:
         description:
         - List of dictionaries that represent parameters passed from the method request to the back end.
@@ -655,7 +668,8 @@ def put_integration(params):
     httpMethod=params.get('name'),
     type=params['method_integration'].get('integration_type', 'AWS'),
     requestParameters=param_transformer(params['method_integration'].get('integration_params', []), 'request', 'integration'),
-    requestTemplates=add_templates(params['method_integration'].get('request_templates', []))
+    requestTemplates=add_templates(params['method_integration'].get('request_templates', [])),
+    connectionType= params['method_integration'].get('connection_type', 'INTERNET'),
   )
 
   optional_map = {
@@ -668,6 +682,9 @@ def put_integration(params):
   if params.get('method_integration', {}).get('content_handling', '') != '':
     params['method_integration']['content_handling'] = params['method_integration']['content_handling'].upper()
     optional_map['content_handling'] = 'contentHandling'
+
+  if params.get('method_integration', {}).get('connection_id', '') != '':
+    optional_map['connection_id'] = 'connectionId'
 
   if params.get('method_integration', {}).get('credentials', '') != '':
     optional_map['credentials'] = 'credentials'
@@ -690,6 +707,7 @@ def update_integration(method, params):
     'passthrough_behavior': 'passthroughBehavior',
     'integration_type': 'type',
     'content_handling': 'contentHandling',
+    'connection_id': 'connectionId',
   }
 
   if mi_params.get('credentials', '') != '':
@@ -1050,6 +1068,8 @@ class ApiGwMethod:
           cache_namespace=dict(required=False, default=''),
           cache_key_parameters=dict(required=False, type='list', default=[]),
           content_handling=dict(required=False, default='', choices=['convert_to_binary', 'convert_to_text', '']),
+          connection_type=dict(required=False, default='INTERNET', choices=['INTERNET', 'VPC_LINK']),
+          connection_id=dict(required=False, default=''),
           integration_params=dict(
             type='list',
             required=False,
