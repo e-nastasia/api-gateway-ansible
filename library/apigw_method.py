@@ -991,12 +991,9 @@ def param_transformer(params_list, type, location='method'):
   params = {}
 
   for param in params_list:
-    key = "{3}.{0}.{1}.{2}".format(type, param['location'], param['name'], location)
-    if 'param_required' in param:
-      params[key] = param['param_required']
-    elif 'value' in param:
-      params[key] = param['value']
-
+    # This allows for parameters to be defined exactly as they are stored in AWS once
+    # the method has been created
+    params[param['name']] = param['value']
   return params
 
 class ApiGwMethod:
