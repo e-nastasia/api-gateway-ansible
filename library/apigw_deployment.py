@@ -142,6 +142,8 @@ try:
 except ImportError:
   HAS_BOTO3 = False
 
+from ansible_collections.amazon.aws.plugins.module_utils.core import AnsibleAWSModule
+
 class ApiGwDeployment:
   def __init__(self, module):
     """
@@ -150,7 +152,7 @@ class ApiGwDeployment:
     self.module = module
     if (not HAS_BOTO3):
       self.module.fail_json(msg="boto and boto3 are required for this module")
-    self.client = boto3.client('apigateway')
+    self.client = module.client('apigateway')
 
   @staticmethod
   def _define_module_argument_spec():
@@ -201,7 +203,7 @@ def main():
     Instantiates the module and calls process_request.
     :return: none
     """
-    module = AnsibleModule(
+    module = AnsibleAWSModule(
         argument_spec=ApiGwDeployment._define_module_argument_spec(),
         supports_check_mode=True
     )
